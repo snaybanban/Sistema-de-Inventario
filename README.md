@@ -1,7 +1,5 @@
 # Sistema de Inventario v2.1 Local
 
-Esta versión reemplaza Google Apps Script/Google Sheets como backend principal por:
-
 - Frontend: HTML + CSS + JavaScript (puedes abrirlo con Live Server en VS Code)
 - Backend: Node.js + Express
 - Base de datos: SQLite
