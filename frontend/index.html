@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+    Sistema de Inventario
+  </title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="estilo.css">
+
+</head>
+
+<body>
+
+
+  <!-- =========================================================
+     LOGIN
+========================================================= -->
+
+  <div id="loginScreen" class="login-screen">
+
+    <div class="login-card">
+
+      <div class="brand-mark">
+
+        <i class="fas fa-warehouse"></i>
+
+      </div>
+
+      <h1>
+        Sistema de Inventario
+      </h1>
+
+      <p>
+        Inicia sesión para continuar
+      </p>
+
+      <form id="loginForm">
+
+        <label>
+
+          Usuario
+
+          <input id="loginUsuario" type="text" autocomplete="username" required>
+
+        </label>
+
+        <label>
+
+          Contraseña
+
+          <div class="password-container">
+
+            <input id="loginPassword" type="password" autocomplete="current-password" required>
+
+            <button id="togglePassword" type="button" class="password-toggle">
+
+              <i class="fas fa-eye"></i>
+
+            </button>
+
+          </div>
+
+        </label>
+
+        <button type="submit" class="btn primary full">
+
+          <i class="fas fa-right-to-bracket"></i>
+
+          Iniciar sesión
+
+        </button>
+
+      </form>
+
+      <div id="statusLogin" class="status"></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+     APP
+========================================================= -->
+
+  <div id="app" class="app hidden">
+
+    <!-- =====================================================
+         MOBILE HEADER
+    ====================================================== -->
+
+    <header class="mobile-header">
+
+      <button id="mobileMenuBtn" class="mobile-menu-btn" type="button">
+
+        <i class="fas fa-bars"></i>
+
+      </button>
+
+      <div class="mobile-brand">
+
+        <i class="fas fa-warehouse"></i>
+
+        <span>
+          Inventario
+        </span>
+
+      </div>
+
+      <div class="mobile-user">
+
+        <i class="fas fa-user"></i>
+
+      </div>
+
+    </header>
+
+
+    <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside id="sidebar" class="sidebar">
+
+      <div class="sidebar-brand">
+
+        <i class="fas fa-warehouse"></i>
+
+        <span>
+          Inventario
+        </span>
+
+      </div>
+
+      <nav id="nav">
+
+        <button data-section="dashboard" data-roles="admin,supervisor">
+          <i class="fas fa-chart-line"></i>
+          <span>Dashboard</span>
+        </button>
+
+        <button data-section="inventario" data-roles="admin,supervisor,usuario">
+          <i class="fas fa-boxes-stacked"></i>
+          <span>Inventario</span>
+        </button>
+
+        <button data-section="productos" data-roles="admin,supervisor">
+          <i class="fas fa-box-open"></i>
+          <span>Productos</span>
+        </button>
+
+        <button data-section="categorias" data-roles="admin,supervisor">
+          <i class="fas fa-tags"></i>
+          <span>Categorías</span>
+        </button>
+
+        <button data-section="clientes" data-roles="admin,supervisor,usuario">
+          <i class="fas fa-address-book"></i>
+          <span>Clientes</span>
+        </button>
+
+        <button data-section="vendedores" data-roles="admin,supervisor">
+          <i class="fas fa-user-tie"></i>
+          <span>Vendedores</span>
+        </button>
+
+        <button data-section="compras" data-roles="admin,supervisor">
+          <i class="fas fa-cart-plus"></i>
+          <span>Compras</span>
+        </button>
+
+        <button data-section="caja" data-roles="admin,supervisor,usuario">
+          <i class="fas fa-cash-register"></i>
+          <span>Caja</span>
+        </button>
+
+        <button data-section="facturas" data-roles="admin,supervisor,usuario">
+          <i class="fas fa-file-invoice"></i>
+          <span>Facturas</span>
+        </button>
+
+        <button data-section="ventas" data-roles="admin,supervisor,usuario">
+          <i class="fas fa-receipt"></i>
+          <span>Venta rápida</span>
+        </button>
+
+        <button data-section="resumenes" data-roles="admin,supervisor">
+          <i class="fas fa-chart-bar"></i>
+          <span>Resúmenes</span>
+        </button>
+
+        <button data-section="usuarios" data-roles="admin">
+          <i class="fas fa-users-gear"></i>
+          <span>Usuarios</span>
+        </button>
+
+      </nav>
+
+      <div class="session-box">
+
+        <div class="session-user">
+
+          <div class="session-avatar">
+
+            <i class="fas fa-user"></i>
+
+          </div>
+
+          <div>
+
+            <strong id="sessionName">
+              Usuario
+            </strong>
+
+            <span id="sessionRole">
+              ROL
+            </span>
+
+          </div>
+
+        </div>
+
+        <button id="logoutBtn" type="button" class="btn danger small full">
+
+          <i class="fas fa-right-from-bracket"></i>
+
+          Cerrar sesión
+
+        </button>
+
+      </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="main">
+
+
+      <!-- DASHBOARD -->
+
+      <section id="dashboard" class="section" data-roles="admin,supervisor">
+
+        <div class="section-head">
+
+          <div>
+            <h2>Dashboard</h2>
+            <p>
+              Resumen general del sistema.
+            </p>
+          </div>
+
+          <button id="refreshDashboard" class="btn secondary">
+            <i class="fas fa-rotate"></i>
+            Actualizar
+          </button>
+
+        </div>
+
+        <div class="cards">
+
+          <article>
+            <span>Ventas</span>
+            <strong id="dashVentas">C$ 0.00</strong>
+          </article>
+
+          <article>
+            <span>Compras</span>
+            <strong id="dashCompras">C$ 0.00</strong>
+          </article>
+
+          <article>
+            <span>Balance</span>
+            <strong id="dashBalance">C$ 0.00</strong>
+          </article>
+
+          <article>
+            <span>Productos</span>
+            <strong id="dashProductos">0</strong>
+          </article>
+
+          <article>
+            <span>Stock bajo</span>
+            <strong id="dashStockBajo">0</strong>
+          </article>
+
+        </div>
+
+      </section>
+
+
+      <!-- INVENTARIO -->
+
+      <section id="inventario" class="section" data-roles="admin,supervisor,usuario">
+
+        <div class="section-head">
+
+          <div>
+            <h2>Inventario</h2>
+            <p>
+              Productos y existencias.
+            </p>
+          </div>
+
+          <button id="refreshProducts" class="btn secondary">
+            <i class="fas fa-rotate"></i>
+            Actualizar
+          </button>
+
+        </div>
+
+        <input id="productSearch" class="search" placeholder="Buscar producto...">
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Imagen</th>
+                <th>ID</th>
+                <th>Código</th>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Stock</th>
+                <th>Mínimo</th>
+                <th>Compra</th>
+                <th>Venta</th>
+              </tr>
+            </thead>
+
+            <tbody id="productsTable"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+      <!-- PRODUCTOS -->
+
+      <section id="productos" class="section" data-roles="admin,supervisor">
+
+        <div class="section-head">
+
+          <div>
+            <h2>Registrar producto</h2>
+            <p>
+              Código, precios, inventario e imagen.
+            </p>
+          </div>
+
+        </div>
+
+        <form id="productForm" class="form-grid" enctype="multipart/form-data">
+
+          <label>
+            Código
+            <input id="pCodigo" required>
+          </label>
+
+          <label>
+            Nombre
+            <input id="pNombre" required>
+          </label>
+
+          <label>
+            Categoría
+            <select id="pCategoria">
+              <option value="">
+                Sin categoría
+              </option>
+            </select>
+          </label>
+
+          <label>
+            Precio compra
+            <input id="pCompra" type="number" min="0" step="0.01" value="0" required>
+          </label>
+
+          <label>
+            Precio venta
+            <input id="pVenta" type="number" min="0" step="0.01" value="0" required>
+          </label>
+
+          <label>
+            Stock
+            <input id="pStock" type="number" min="0" value="0" required>
+          </label>
+
+          <label>
+            Stock mínimo
+            <input id="pStockMin" type="number" min="0" value="0" required>
+          </label>
+
+          <label class="full">
+            Imagen
+            <input id="pImagen" type="file" accept="image/jpeg,image/png,image/webp">
+          </label>
+
+          <div id="productImagePreviewContainer" class="product-image-preview hidden">
+            <img id="productImagePreview" alt="Vista previa">
+          </div>
+
+          <button class="btn primary full" type="submit">
+            <i class="fas fa-save"></i>
+            Guardar producto
+          </button>
+
+        </form>
+
+        <div id="statusProduct" class="status"></div>
+
+      </section>
+
+
+      <!-- CATEGORÍAS -->
+
+      <section id="categorias" class="section" data-roles="admin,supervisor">
+
+        <h2>Categorías</h2>
+
+        <form id="categoryForm" class="inline-form">
+
+          <input id="categoryName" placeholder="Nueva categoría" required>
+
+          <button class="btn primary" type="submit">
+            Agregar
+          </button>
+
+        </form>
+
+        <div id="statusCategory" class="status"></div>
+
+        <ul id="categoryList" class="list"></ul>
+
+      </section>
+
+
+      <!-- CLIENTES -->
+
+      <section id="clientes" class="section" data-roles="admin,supervisor,usuario">
+
+        <div class="section-head">
+
+          <div>
+            <h2>Clientes</h2>
+            <p>
+              Clientes disponibles para facturación.
+            </p>
+          </div>
+
+        </div>
+
+        <form id="clientForm" class="form-grid">
+
+          <label>
+            Nombre
+            <input id="clientName" required>
+          </label>
+
+          <label>
+            Identificación
+            <input id="clientIdNumber">
+          </label>
+
+          <label>
+            Teléfono
+            <input id="clientPhone">
+          </label>
+
+          <label>
+            Correo
+            <input id="clientEmail" type="email">
+          </label>
+
+          <label class="full">
+            Dirección
+            <input id="clientAddress">
+          </label>
+
+          <button class="btn primary full" type="submit">
+            Registrar cliente
+          </button>
+
+        </form>
+
+        <div id="statusClient" class="status"></div>
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Identificación</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+                <th>Dirección</th>
+              </tr>
+            </thead>
+
+            <tbody id="clientsTable"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+      <!-- VENDEDORES -->
+
+      <section id="vendedores" class="section" data-roles="admin,supervisor">
+
+        <div class="section-head">
+
+          <div>
+            <h2>Vendedores</h2>
+            <p>
+              Vendedores y comisiones.
+            </p>
+          </div>
+
+        </div>
+
+        <form id="sellerForm" class="form-grid">
+
+          <label>
+            Nombre
+            <input id="sellerName" required>
+          </label>
+
+          <label>
+            Teléfono
+            <input id="sellerPhone">
+          </label>
+
+          <label>
+            Correo
+            <input id="sellerEmail" type="email">
+          </label>
+
+          <label>
+            Comisión %
+            <input id="sellerCommission" type="number" min="0" max="100" step="0.01" value="0">
+          </label>
+
+          <button class="btn primary full" type="submit">
+            Registrar vendedor
+          </button>
+
+        </form>
+
+        <div id="statusSeller" class="status"></div>
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+                <th>Comisión</th>
+              </tr>
+            </thead>
+
+            <tbody id="sellersTable"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+      <!-- COMPRAS -->
+
+      <section id="compras" class="section" data-roles="admin,supervisor">
+
+        <h2>Registrar compra</h2>
+
+        <form id="purchaseForm" class="form-grid">
+
+          <label class="full">
+            Código / producto
+            <input id="purchaseSearch" placeholder="Escanea y presiona Enter" autocomplete="off" required>
+          </label>
+
+          <div id="purchaseSelected" class="selected full">
+            Ningún producto seleccionado.
+          </div>
+
+          <input id="purchaseProductId" type="hidden">
+
+          <label>
+            Cantidad
+            <input id="purchaseQty" type="number" min="1" value="1" required>
+          </label>
+
+          <label>
+            Precio compra
+            <input id="purchasePrice" type="number" min="0" step="0.01" required>
+          </label>
+
+          <label class="full">
+            Proveedor
+            <input id="purchaseSupplier">
+          </label>
+
+          <button class="btn primary full" type="submit">
+            Registrar compra
+          </button>
+
+        </form>
+
+        <div id="statusPurchase" class="status"></div>
+
+      </section>
+
+
+      <!-- CAJA -->
+
+      <section id="caja" class="section" data-roles="admin,supervisor,usuario">
+
+        <div class="section-head">
+
+          <div>
+            <h2>
+              <i class="fas fa-cash-register"></i>
+              Caja / POS
+            </h2>
+
+            <p>
+              Escanea productos y procesa la venta.
+            </p>
+          </div>
+
+          <button id="posClearBtn" class="btn secondary">
+            <i class="fas fa-trash"></i>
+            Vaciar
+          </button>
+
+        </div>
+
+        <div class="pos-layout">
+
+          <div class="pos-main">
+
+            <div class="pos-scanner">
+
+              <label>
+                Código de barras / producto
+
+                <input id="posBarcode" class="pos-barcode-input" autocomplete="off"
+                  placeholder="Escanea y presiona Enter">
+              </label>
+
+              <button id="posSearchBtn" class="btn primary">
+                <i class="fas fa-barcode"></i>
+                Agregar
+              </button>
+
+            </div>
+
+            <div id="statusPos" class="status"></div>
+
+            <div class="table-wrap pos-cart-wrap">
+
+              <table>
+
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                    <th></th>
+                  </tr>
+                </thead>
+
+                <tbody id="posCartTable">
+
+                  <tr>
+                    <td colspan="5">
+                      No hay productos.
+                    </td>
+                  </tr>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </div>
+
+          <aside class="pos-summary">
+
+            <h3>
+              Detalle de venta
+            </h3>
+
+            <label>
+              Cliente
+
+              <select id="posClient">
+                <option value="">
+                  Consumidor Final
+                </option>
+              </select>
+            </label>
+
+            <label>
+              Vendedor
+
+              <select id="posSeller">
+                <option value="">
+                  Sin vendedor
+                </option>
+              </select>
+            </label>
+
+            <div class="pos-commission">
+              <span>Comisión</span>
+              <strong id="posCommission">
+                0.00%
+              </strong>
+            </div>
+
+            <label>
+              Descuento
+
+              <input id="posDiscount" type="number" min="0" step="0.01" value="0">
+            </label>
+
+            <label>
+              Método de pago
+
+              <select id="posPaymentMethod">
+
+                <option value="EFECTIVO">
+                  Efectivo
+                </option>
+
+                <option value="TARJETA">
+                  Tarjeta
+                </option>
+
+                <option value="TRANSFERENCIA">
+                  Transferencia
+                </option>
+
+              </select>
+            </label>
+
+            <label id="posReceivedContainer">
+              Dinero recibido
+
+              <input id="posReceived" type="number" min="0" step="0.01" value="0">
+            </label>
+
+            <label id="posReferenceContainer" class="hidden">
+              Referencia
+
+              <input id="posReference" placeholder="Referencia del pago">
+            </label>
+
+            <div class="pos-totals">
+
+              <div>
+                <span>Subtotal</span>
+                <strong id="posSubtotal">
+                  C$ 0.00
+                </strong>
+              </div>
+
+              <div>
+                <span>Descuento</span>
+                <strong id="posDiscountDisplay">
+                  C$ 0.00
+                </strong>
+              </div>
+
+              <div class="pos-total-final">
+                <span>TOTAL</span>
+                <strong id="posTotal">
+                  C$ 0.00
+                </strong>
+              </div>
+
+              <div>
+                <span>Cambio</span>
+                <strong id="posChange">
+                  C$ 0.00
+                </strong>
+              </div>
+
+              <div>
+                <span>Comisión</span>
+                <strong id="posCommissionAmount">
+                  C$ 0.00
+                </strong>
+              </div>
+
+            </div>
+
+            <button id="posCheckoutBtn" class="btn primary full checkout-button">
+              <i class="fas fa-check"></i>
+              FINALIZAR VENTA
+            </button>
+
+          </aside>
+
+        </div>
+
+      </section>
+
+
+      <!-- FACTURAS -->
+
+      <section id="facturas" class="section" data-roles="admin,supervisor,usuario">
+
+        <div class="section-head">
+
+          <div>
+            <h2>Facturas</h2>
+            <p>
+              Historial y reimpresión.
+            </p>
+          </div>
+
+          <button id="refreshInvoices" class="btn secondary">
+            <i class="fas fa-rotate"></i>
+            Actualizar
+          </button>
+
+        </div>
+
+        <input id="invoiceSearch" class="search" placeholder="Buscar factura, cliente o vendedor...">
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Factura</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Vendedor</th>
+                <th>Método</th>
+                <th>Total</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody id="invoicesTable"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+      <!-- VENTA RAPIDA -->
+
+      <section id="ventas" class="section" data-roles="admin,supervisor,usuario">
+
+        <h2>Venta rápida</h2>
+
+        <p class="note">
+          Para ventas normales recomendamos usar Caja.
+        </p>
+
+        <form id="saleForm" class="form-grid">
+
+          <label class="full">
+            Producto
+
+            <input id="saleSearch" autocomplete="off" placeholder="Código + Enter" required>
+          </label>
+
+          <div id="saleSelected" class="selected full">
+            Ningún producto seleccionado.
+          </div>
+
+          <input id="saleProductId" type="hidden">
+
+          <label>
+            Cantidad
+
+            <input id="saleQty" type="number" min="1" value="1">
+          </label>
+
+          <label>
+            Precio
+
+            <input id="salePrice" type="number" min="0" step="0.01">
+          </label>
+
+          <label class="full">
+            Cliente
+
+            <input id="saleClient" value="Consumidor Final">
+          </label>
+
+          <button class="btn primary full">
+            Registrar venta
+          </button>
+
+        </form>
+
+        <div id="statusSale" class="status"></div>
+
+      </section>
+
+
+      <!-- RESUMENES -->
+
+      <section id="resumenes" class="section" data-roles="admin,supervisor">
+
+        <div class="section-head">
+
+          <div>
+            <h2>Resúmenes</h2>
+            <p>
+              Ventas, compras y balance.
+            </p>
+          </div>
+
+          <button id="refreshSummary" class="btn secondary">
+            Actualizar
+          </button>
+
+        </div>
+
+        <div class="cards">
+
+          <article>
+            <span>Ventas</span>
+            <strong id="summarySales">
+              C$0.00
+            </strong>
+          </article>
+
+          <article>
+            <span>Compras</span>
+            <strong id="summaryPurchases">
+              C$0.00
+            </strong>
+          </article>
+
+          <article>
+            <span>Balance</span>
+            <strong id="summaryBalance">
+              C$0.00
+            </strong>
+          </article>
+
+          <article>
+            <span>Ventas registradas</span>
+            <strong id="summarySalesCount">
+              0
+            </strong>
+          </article>
+
+          <article>
+            <span>Compras registradas</span>
+            <strong id="summaryPurchasesCount">
+              0
+            </strong>
+          </article>
+
+        </div>
+
+        <div class="actions">
+
+          <button id="summarySalesBtn" class="btn secondary">
+            Ventas
+          </button>
+
+          <button id="summaryPurchasesBtn" class="btn secondary">
+            Compras
+          </button>
+
+          <button id="summaryDailyBtn" class="btn primary">
+            Diario
+          </button>
+
+        </div>
+
+        <div id="statusSummary" class="status"></div>
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead id="summaryTableHead"></thead>
+
+            <tbody id="summaryTableBody"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+      <!-- USERS -->
+
+      <section id="usuarios" class="section" data-roles="admin">
+
+        <h2>Usuarios</h2>
+
+        <form id="userForm" class="form-grid">
+
+          <label>
+            Nombre
+            <input id="uNombre" required>
+          </label>
+
+          <label>
+            Usuario
+            <input id="uUsuario" required>
+          </label>
+
+          <label>
+            Contraseña
+            <input id="uPassword" type="password" minlength="8" required>
+          </label>
+
+          <label>
+            Rol
+
+            <select id="uRol">
+              <option value="usuario">
+                Usuario
+              </option>
+
+              <option value="supervisor">
+                Supervisor
+              </option>
+
+              <option value="admin">
+                Administrador
+              </option>
+            </select>
+          </label>
+
+          <button class="btn primary full">
+            Crear usuario
+          </button>
+
+        </form>
+
+        <div id="statusUser" class="status"></div>
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody id="usersTable"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+
+  <!-- =========================================================
+     FACTURA MODAL
+========================================================= -->
+
+  <div id="invoiceModal" class="invoice-modal hidden">
+
+    <div id="invoiceModalBackdrop" class="invoice-modal-backdrop"></div>
+
+    <div class="invoice-modal-dialog">
+
+      <div class="invoice-modal-header">
+
+        <div>
+
+          <h2>
+            Factura
+          </h2>
+
+          <span id="invoiceModalNumber"></span>
+
+        </div>
+
+        <button id="invoiceCloseBtn" class="invoice-close">
+          <i class="fas fa-xmark"></i>
+        </button>
+
+      </div>
+
+      <div id="invoiceReceipt" class="invoice-receipt">
+
+        <div class="receipt-company">
+
+          <div class="receipt-logo">
+            <i class="fas fa-store"></i>
+          </div>
+
+          <h2>
+            SISTEMA DE INVENTARIO
+          </h2>
+
+          <p>
+            Managua, Nicaragua
+          </p>
+
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <div class="receipt-info">
+
+          <div>
+            <span>Factura:</span>
+            <strong id="receiptInvoiceNumber"></strong>
+          </div>
+
+          <div>
+            <span>Fecha:</span>
+            <strong id="receiptDate"></strong>
+          </div>
+
+          <div>
+            <span>Cliente:</span>
+            <strong id="receiptClient"></strong>
+          </div>
+
+          <div>
+            <span>Vendedor:</span>
+            <strong id="receiptSeller"></strong>
+          </div>
+
+          <div>
+            <span>Cajero:</span>
+            <strong id="receiptCashier"></strong>
+          </div>
+
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <div id="receiptItems" class="receipt-items"></div>
+
+        <div class="receipt-divider"></div>
+
+        <div class="receipt-totals">
+
+          <div>
+            <span>Subtotal</span>
+            <strong id="receiptSubtotal"></strong>
+          </div>
+
+          <div>
+            <span>Descuento</span>
+            <strong id="receiptDiscount"></strong>
+          </div>
+
+          <div class="receipt-total">
+            <span>TOTAL</span>
+            <strong id="receiptTotal"></strong>
+          </div>
+
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <div class="receipt-info">
+
+          <div>
+            <span>Método:</span>
+            <strong id="receiptPaymentMethod"></strong>
+          </div>
+
+          <div>
+            <span>Recibido:</span>
+            <strong id="receiptReceived"></strong>
+          </div>
+
+          <div>
+            <span>Cambio:</span>
+            <strong id="receiptChange"></strong>
+          </div>
+
+          <div>
+            <span>Comisión:</span>
+            <strong id="receiptCommission"></strong>
+          </div>
+
+          <div id="receiptReferenceRow" class="hidden">
+            <span>Referencia:</span>
+            <strong id="receiptReference"></strong>
+          </div>
+
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <div class="receipt-footer">
+
+          <strong>
+            ¡Gracias por su compra!
+          </strong>
+
+          <p>
+            Conserve su comprobante.
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="invoice-modal-actions">
+
+        <button id="invoicePrintBtn" class="btn primary">
+          <i class="fas fa-print"></i>
+          Imprimir
+        </button>
+
+        <button id="invoiceCloseBottomBtn" class="btn secondary">
+          Cerrar
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <script src="script.js"></script>
+
+</body>
+
+</html>

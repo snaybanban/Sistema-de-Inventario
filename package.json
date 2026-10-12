@@ -1,0 +1,13 @@
+{
+  "name": "sistema-de-inventario-local",
+  "version": "3.1.0",
+  "private": true,
+  "scripts": {
+    "server": "node backend/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "multer": "^2.0.2"
+  }
+}
